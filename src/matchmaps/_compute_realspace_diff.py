@@ -97,23 +97,24 @@ def compute_realspace_difference_map(
     # if rbr_groups = None, just returns (None, None)
     rbr_phenix, rbr_gemmi = _rbr_selection_parser(rbr_selections)
 
-    mtzon_scaled = mtzon.removesuffix(".mtz") + "_scaled" + ".mtz"
+    # mtzon_scaled = mtzon.removesuffix(".mtz") + "_scaled" + ".mtz"
+    # mtzon_scaled = mtzon
+    
+    # print(
+    #     f"{time.strftime('%H:%M:%S')}: Running scaleit to scale 'on' data to 'off' data..."
+    # )
 
-    print(
-        f"{time.strftime('%H:%M:%S')}: Running scaleit to scale 'on' data to 'off' data..."
-    )
-
-    subprocess.run(
-        f"rs.scaleit -r {input_dir}/{mtzoff} {Foff} {SigFoff} -i {input_dir}/{mtzon} {Fon} {SigFon} -o {output_dir}/{mtzon_scaled}",
-        shell=True,
-        capture_output=(not verbose),
-    )
+    # subprocess.run(
+    #     f"rs.scaleit -r {input_dir}/{mtzoff} {Foff} {SigFoff} -i {input_dir}/{mtzon} {Fon} {SigFon} -o {output_dir}/{mtzon_scaled}",
+    #     shell=True,
+    #     capture_output=(not verbose),
+    # )
 
     pdboff = _handle_special_positions(pdboff, input_dir, output_dir)
 
     pdboff = _renumber_waters(pdboff, output_dir)
 
-    mtzon = mtzon_scaled
+    # mtzon = mtzon_scaled
 
     print(f"{time.strftime('%H:%M:%S')}: Running phenix.refine for the 'on' data...")
 
@@ -126,6 +127,7 @@ def compute_realspace_difference_map(
         eff=eff,
         verbose=verbose,
         rbr_selections=rbr_phenix,
+        off_labels=f"{Fon},{SigFon}"
     )
 
     print(f"{time.strftime('%H:%M:%S')}: Running phenix.refine for the 'off' data...")
